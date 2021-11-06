@@ -14,6 +14,11 @@ go build -tags static_all -a -installsuffix cgo -ldflags '-extldflags "-static"'
 
 ```
 
+To use server set below env variable
+```
+REDIS_HOST=localhost //host where redis server is running
+REDIS_PORT=5000 //port on which redis server is running
+```
 
 ### Steps to Use on local machine
 
