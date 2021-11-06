@@ -71,3 +71,45 @@ func TestRemove(t *testing.T) {
 	apicall.ServerUrl = server.URL
 	apicall.Remove("temp1.txt")
 }
+
+func TestList(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
+		// Test request parameter
+		assert.Equal(t, req.Method, http.MethodGet)
+		assert.Equal(t, req.URL.String(), "/ls")
+		// Send response to be tested
+		rw.WriteHeader(http.StatusOK)
+	}))
+	// Close the server when test finishes
+	defer server.Close()
+	apicall.ServerUrl = server.URL
+	apicall.List()
+}
+
+func TestWc(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
+		// Test request parameter
+		assert.Equal(t, req.Method, http.MethodGet)
+		assert.Equal(t, req.URL.String(), "/wc")
+		// Send response to be tested
+		rw.WriteHeader(http.StatusOK)
+	}))
+	// Close the server when test finishes
+	defer server.Close()
+	apicall.ServerUrl = server.URL
+	apicall.WC()
+}
+
+func TestFreqWords(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
+		// Test request parameter
+		assert.Equal(t, req.Method, http.MethodGet)
+		assert.Equal(t, "/freqwords?order=asc&limit=10", req.URL.String())
+		// Send response to be tested
+		rw.WriteHeader(http.StatusOK)
+	}))
+	// Close the server when test finishes
+	defer server.Close()
+	apicall.ServerUrl = server.URL
+	apicall.FreqWords("10", "asc")
+}

@@ -3,12 +3,14 @@ package main
 import (
 	"bufio"
 	"filestore/server/cache"
+	"filestore/server/freqwords"
 	"flag"
 	"fmt"
 	"io"
 	"net/http"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"sync"
 
@@ -36,6 +38,7 @@ const (
 	wc          = apiBasePath + "wc"
 	rm          = apiBasePath + "rm"
 	list        = apiBasePath + "ls"
+	freq        = apiBasePath + "freqwords"
 
 	// server version.
 	version = "1.0.0"
@@ -52,6 +55,7 @@ func main() {
 	r.DELETE(rm, RemoveFile)
 	r.GET(list, ListFiles)
 	r.GET(wc, WordCount)
+	r.GET(freq, FreqWords)
 	r.Run(port)
 
 }
@@ -285,4 +289,18 @@ func HashExist(c *gin.Context) {
 		fmt.Println("Not Found")
 		c.String(http.StatusNotFound, "")
 	}
+}
+
+// FreqWords ... Returns Frequently occuring words based on limit and order
+func FreqWords(c *gin.Context) {
+	words := c.Query("limit")
+	word, err := strconv.Atoi(words)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, Response{Error: err.Error()})
+		return
+	}
+	freqwords.Order = c.Query("order")
+	commonwords := freqwords.CommonWords("filestore/", word)
+	fmt.Println(commonwords)
+	c.JSON(http.StatusOK, gin.H{"words": commonwords})
 }

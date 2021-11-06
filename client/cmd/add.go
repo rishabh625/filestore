@@ -13,7 +13,7 @@ import (
 
 // addCmd represents the add command
 var addCmd = &cobra.Command{
-	Use:   "add",
+	Use:   "add file.txt ...",
 	Short: "Transfer local Files to remote server",
 	Long:  `Save Local Files Remotely Passsing n number of files as agrument to add`,
 	Run: func(cmd *cobra.Command, args []string) {

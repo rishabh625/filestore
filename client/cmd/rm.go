@@ -7,9 +7,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// addCmd represents the add command
+// rmCmd represents the add command
 var rmCmd = &cobra.Command{
-	Use:   "rm",
+	Use:   "rm file.txt ...",
 	Short: "Delete Files from remote server",
 	Long:  `Delete Files from remote server Passsing n number of files as agruments`,
 	Run: func(cmd *cobra.Command, args []string) {

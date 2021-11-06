@@ -7,7 +7,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// addCmd represents the add command
+// wcCmd represents the add command
 var wcCmd = &cobra.Command{
 	Use:   "wc",
 	Short: "Retrievs word count",

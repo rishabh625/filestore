@@ -7,7 +7,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// addCmd represents the add command
+// lsCmd represents the add command
 var lsCmd = &cobra.Command{
 	Use:   "ls",
 	Short: "List Files on remote server",

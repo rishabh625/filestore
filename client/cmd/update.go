@@ -8,9 +8,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// addCmd represents the add command
+// updateCmd represents the add command
 var updateCmd = &cobra.Command{
-	Use:   "update",
+	Use:   "update file.txt ...",
 	Short: "update contents of local file to remote",
 	Long: `update contents of file.txt(passed in arguments) in
 	server with the local file.txt(passed in arguments) or create a new file.txt(passed in arguments) in server if it is

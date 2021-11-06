@@ -49,3 +49,9 @@ func TestAdd(t *testing.T) {
 	}
 	assert.Equal(t, "Hello World", string(readbytes))
 }
+
+func TestValidateFlags(t *testing.T) {
+	limit, order := cmd.ValidateFlags("non", "wrong")
+	assert.Equal(t, "10", limit)
+	assert.Equal(t, "desc", order)
+}

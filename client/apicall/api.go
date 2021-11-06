@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"mime/multipart"
 	"net/http"
 	"os"
@@ -175,4 +176,24 @@ func WC() string {
 		}
 	}
 	return "Failed to give word count"
+}
+
+//FreqWords ... returns n number of frequently occuring word present in filestore as byte or nil
+func FreqWords(limit, order string) []byte {
+	url := fmt.Sprintf("%s/%s?order=%s&limit=%s", ServerUrl, "freqwords", order, limit)
+	req, _ := http.NewRequest(http.MethodGet, url, nil)
+	var netClient = &http.Client{
+		Timeout: time.Second * 30,
+	}
+	resp, _ := netClient.Do(req)
+	if resp.StatusCode == http.StatusOK {
+		defer resp.Body.Close()
+		body, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			fmt.Println(err)
+			return nil
+		}
+		return body
+	}
+	return nil
 }
