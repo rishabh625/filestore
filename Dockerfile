@@ -14,9 +14,13 @@ RUN mkdir filestore/
 
 COPY . .
 
-# Build the Go app
+# Build the Go app client
 RUN CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build -tags static_all -a -installsuffix cgo -ldflags '-extldflags "-static"' -o 'store' client/main.go
 
+# Make client executable
+RUN chmod +x store
+
+# Build the Go app server
 RUN CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build -tags static_all -a -installsuffix cgo -ldflags '-extldflags "-static"' -o './bin/server' server/main.go
 
 # Expose port 8080 to the outside world
