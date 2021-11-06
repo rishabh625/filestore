@@ -2,6 +2,7 @@ package cache
 
 import (
 	"fmt"
+	"os"
 
 	gredis "github.com/go-redis/redis/v8"
 )
@@ -26,8 +27,8 @@ func GetConnection() *gredis.Client {
 
 // NewConnection ... Gives connection to redis host passed
 func newConnection() (*gredis.Client, error) {
-	host = "localhost"
-	port = "6379"
+	host = os.Getenv("REDIS_HOST")
+	port = os.Getenv("REDIS_PORT")
 	rdb := gredis.NewClient(&gredis.Options{
 		Addr:     fmt.Sprintf("%s:%s", host, port),
 		Password: password,
