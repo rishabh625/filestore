@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func HExistsTest(t *testing.T) {
+func TestHExists(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
 		// Test request parameter
 		assert.Equal(t, req.URL.String(), "/hexist")
@@ -28,12 +28,10 @@ func HExistsTest(t *testing.T) {
 	assert.Equal(t, true, status2)
 }
 
-func CopyCallTest(t *testing.T) {
+func TestCopyCall(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
 		// Test request parameter
 		assert.Equal(t, req.URL.String(), "/copy")
-		hash := req.Header.Get("hash")
-		assert.Equal(t, "abcd", hash)
 		// Send response to be tested
 		rw.WriteHeader(http.StatusOK)
 	}))
@@ -44,7 +42,7 @@ func CopyCallTest(t *testing.T) {
 	assert.Equal(t, true, status1)
 }
 
-func AddCallTest(t *testing.T) {
+func TestAddCall(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
 		// Test request parameter
 		assert.Equal(t, req.URL.String(), "/store")
@@ -60,7 +58,7 @@ func AddCallTest(t *testing.T) {
 	assert.Equal(t, true, status1)
 }
 
-func RemoveTest(t *testing.T) {
+func TestRemove(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
 		// Test request parameter
 		assert.Equal(t, req.Method, http.MethodDelete)

@@ -8,6 +8,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"os"
+	"path/filepath"
 	"strings"
 	"time"
 )
@@ -22,6 +23,7 @@ type CopyFileData struct {
 
 // Hexists ... Takes Filename and its content's Hash as input, Checks whether File Content is repeated or File Already Exists Querying Server. return Siggnature (?file content is repeated,?file is duplicated)
 func Hexists(hash, file string) (bool, bool) {
+	file = filepath.Base(file)
 	req, err := http.NewRequest(http.MethodGet, ServerUrl+"/hexist", nil)
 	if err != nil {
 		return false, true
@@ -47,6 +49,7 @@ func Hexists(hash, file string) (bool, bool) {
 
 // CopyCall ... Takes Filename and its content's Hash as input, Calls /copy URI to store file without Sending its content returns true if file is copied else returns false
 func CopyCall(filename, hash string) bool {
+	filename = filepath.Base(filename)
 	payloadstr := CopyFileData{
 		FileName: filename,
 		Hash:     hash,
@@ -150,7 +153,7 @@ func Remove(file string) string {
 	if resp.StatusCode == http.StatusOK {
 		return fmt.Sprintf("File Deleted Successfully %s ", file)
 	} else {
-		return fmt.Sprintf("Failed to Delete file ", file, "Reason: ", body.String())
+		return fmt.Sprintf("Failed to Delete file %s Reason: %s", file, body.String())
 	}
 }
 
