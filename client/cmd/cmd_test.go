@@ -4,11 +4,15 @@ import (
 	"errors"
 	"filestore/client/apicall"
 	"filestore/client/cmd"
+	"io/ioutil"
 	"os"
 	"strings"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
+// TestAdd Tests Function Usecase plz start server at localhost:5000 before using this
 func TestAdd(t *testing.T) {
 	apicall.ServerUrl = "http://localhost:5000/files/v1"
 	_, err := os.Create("../../test.txt")
@@ -32,4 +36,16 @@ func TestAdd(t *testing.T) {
 		t.Errorf("Failed to delete file output")
 	}
 
+	b := []byte("Hello World")
+	// write the whole body at once
+	err = ioutil.WriteFile("test.txt", b, 0644)
+	if err != nil {
+		t.Fatalf("%+v", err)
+	}
+	cmd.Updatefile([]string{"test.txt"})
+	readbytes, err := ioutil.ReadFile("../../filestore/test.txt")
+	if err != nil {
+		t.Fatalf("%+v", err)
+	}
+	assert.Equal(t, "Hello World", string(readbytes))
 }
