@@ -13,14 +13,15 @@ API_PORT=5000 //port on which API server is running
 go build -tags static_all -a -installsuffix cgo -ldflags '-extldflags "-static"' -o 'store' client/main.go
 
 ```
+and Use ./store help 
 
-To use server set below env variable
+To use server set below env variable and run server/main.go
 ```
 REDIS_HOST=localhost //host where redis server is running
 REDIS_PORT=5000 //port on which redis server is running
 ```
 
-### Steps to Use on local machine
+### Steps to Use on local machine via docker-compose
 
 1) git clone this repo
 2) Create folder as redis-data
