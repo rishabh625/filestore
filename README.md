@@ -13,5 +13,5 @@ API_PORT=5000 //port on which API server is running
 
 1) git clone this repo
 2) docker-compose up --build -d
-3) docker exec filestore_app_1 bash
+3) docker exec -it filestore_app_1 bash
 4) ./store --help // to access all commands
