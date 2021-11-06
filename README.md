@@ -1,6 +1,6 @@
 # Filestore
 
-Distributed File Store Application Consist of API Server to handle file operations and command line tool to do operations (store named binary is present inside docker container)
+Distributed File Store Application Consist of API Server to handle file operations and command line tool to do operations (store named binary is present inside docker container) , Hash of the file content is generated at client side and is stored in Redis at server side
 
 To use command line set below env variable
 ```
