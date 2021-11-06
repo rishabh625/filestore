@@ -22,14 +22,12 @@ type CopyFileData struct {
 	Hash     string
 }
 
-// Hexists ... Takes Filename and its content's Hash as input, Checks whether File Content is repeated or File Already Exists Querying Server. return Siggnature (?file content is repeated,?file is duplicated)
-func Hexists(hash, file string) (bool, bool) {
-	file = filepath.Base(file)
+// Hexists ... Takes content's Hash as input, Checks whether File Content is repeated by Querying Server. return Signature (?file content is repeated)
+func Hexists(hash string) bool {
 	req, err := http.NewRequest(http.MethodGet, ServerUrl+"/hexist", nil)
 	if err != nil {
-		return false, true
+		return false
 	}
-	req.Header.Set("file", file)
 	req.Header.Set("hash", hash)
 	var netClient = &http.Client{
 		Timeout: time.Second * 10,
@@ -37,15 +35,55 @@ func Hexists(hash, file string) (bool, bool) {
 	resp, err := netClient.Do(req)
 	if err != nil {
 		fmt.Println(err)
-		return false, true
+		return false
 	}
 	if resp.StatusCode == http.StatusOK {
-		return true, true
+		return true
 	}
-	if resp.StatusCode == http.StatusConflict {
-		return false, false
+	return false
+}
+
+// Fexists ... Takes Filename as input, Checks whether File is present  by Querying Server. (return true if file is present)
+func Fexists(file string) bool {
+	file = filepath.Base(file)
+	req, err := http.NewRequest(http.MethodGet, ServerUrl+"/fexist?file="+file, nil)
+	if err != nil {
+		return false
 	}
-	return false, true
+	var netClient = &http.Client{
+		Timeout: time.Second * 10,
+	}
+	resp, err := netClient.Do(req)
+	if err != nil {
+		fmt.Println(err)
+		return false
+	}
+	if resp.StatusCode == http.StatusOK {
+		return true
+	}
+	return false
+}
+
+// Fexists ... Takes Filename and hash as input, Checks whether Hash and File is present  by Querying Server. (return true if hash and file is present)
+func HFexists(hash, file string) bool {
+	file = filepath.Base(file)
+	req, err := http.NewRequest(http.MethodGet, ServerUrl+"/hfexist?file="+file, nil)
+	if err != nil {
+		return false
+	}
+	req.Header.Set("hash", hash)
+	var netClient = &http.Client{
+		Timeout: time.Second * 10,
+	}
+	resp, err := netClient.Do(req)
+	if err != nil {
+		fmt.Println(err)
+		return false
+	}
+	if resp.StatusCode == http.StatusOK {
+		return true
+	}
+	return false
 }
 
 // CopyCall ... Takes Filename and its content's Hash as input, Calls /copy URI to store file without Sending its content returns true if file is copied else returns false

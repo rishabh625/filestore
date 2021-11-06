@@ -34,6 +34,8 @@ const (
 	apiBasePath = "/files/" + apiVersion + "/"
 	addfile     = apiBasePath + "store"
 	hashexist   = apiBasePath + "hexist"
+	fexist      = apiBasePath + "fexist"
+	hfexist     = apiBasePath + "hfexist"
 	copyfile    = apiBasePath + "copy"
 	wc          = apiBasePath + "wc"
 	rm          = apiBasePath + "rm"
@@ -52,6 +54,8 @@ func main() {
 	r.POST(addfile, AddFile)
 	r.POST(copyfile, CopyFile)
 	r.GET(hashexist, HashExist)
+	r.GET(hfexist, HFExist)
+	r.GET(fexist, FExist)
 	r.DELETE(rm, RemoveFile)
 	r.GET(list, ListFiles)
 	r.GET(wc, WordCount)
@@ -270,18 +274,12 @@ func wordCountFromFile(v string, ch chan int, wg *sync.WaitGroup) {
 	ch <- count
 }
 
-// HashExist ... Checks whether file content is duplicated or file already exists
+// HashExist ... Checks whether file content is duplicated
 func HashExist(c *gin.Context) {
 	hash := c.Request.Header.Get("hash")
-	filename := c.Request.Header.Get("file")
 	rdb := cache.GetConnection()
 	res := rdb.HGet(rdb.Context(), "FileHash", hash)
 	result, _ := res.Result()
-	if fs, err := os.Stat("filestore/" + filename); err == nil {
-		fmt.Println(fs.Name())
-		c.String(http.StatusConflict, "")
-		return
-	}
 	if result != "" {
 		fmt.Println("Found")
 		c.String(http.StatusOK, "")
@@ -289,6 +287,36 @@ func HashExist(c *gin.Context) {
 		fmt.Println("Not Found")
 		c.String(http.StatusNotFound, "")
 	}
+}
+
+// HFExist ... Checks whether same file is requested for upload
+func HFExist(c *gin.Context) {
+	hash := c.Request.Header.Get("hash")
+	filename := c.Query("file")
+	fmt.Println("Got hash file  ", hash, " ", filename)
+	rdb := cache.GetConnection()
+	res := rdb.HGet(rdb.Context(), "HashFromFile", filename)
+	result, _ := res.Result()
+	if result != "" {
+		if result == hash {
+			c.String(http.StatusOK, "")
+		} else {
+			c.String(http.StatusNotFound, "")
+		}
+	} else {
+		c.String(http.StatusNotFound, "")
+	}
+}
+
+// FExist ... Checks whether file already exists
+func FExist(c *gin.Context) {
+	filename := c.Query("file")
+	if _, err := os.Stat("filestore/" + filename); err == nil {
+		c.String(http.StatusOK, "")
+		return
+	}
+	fmt.Println("Not Found")
+	c.String(http.StatusNoContent, "")
 }
 
 // FreqWords ... Returns Frequently occuring words based on limit and order

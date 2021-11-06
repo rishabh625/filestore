@@ -49,8 +49,9 @@ func Addfile(files []string) {
 	mutx.Lock()
 	for k, v := range datamap {
 		hashval := generateHash(v)
-		hashexiststatus, notduplicatestatus := apicall.Hexists(hashval, k)
-		if hashexiststatus && notduplicatestatus {
+		hashexiststatus := apicall.Hexists(hashval)
+		duplicatestatus := apicall.Fexists(k)
+		if hashexiststatus && !duplicatestatus {
 			status := apicall.CopyCall(k, hashval)
 			if !status {
 				fmt.Println("Failed to Add file ", k)
@@ -58,7 +59,7 @@ func Addfile(files []string) {
 				fmt.Println("File Copied ", k)
 			}
 		} else {
-			if !notduplicatestatus {
+			if duplicatestatus {
 				fmt.Println("File already Exists ", k)
 			} else {
 				status := apicall.AddCall(k, hashval)

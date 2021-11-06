@@ -13,19 +13,18 @@ func TestHExists(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
 		// Test request parameter
 		assert.Equal(t, req.URL.String(), "/hexist")
-		file := req.Header.Get("file")
+		//file := req.Header.Get("file")
 		hash := req.Header.Get("hash")
 		assert.Equal(t, "abcd", hash)
-		assert.Equal(t, "temp1.txt", file)
+		//assert.Equal(t, "temp1.txt", file)
 		// Send response to be tested
 		rw.WriteHeader(http.StatusOK)
 	}))
 	// Close the server when test finishes
 	defer server.Close()
 	apicall.ServerUrl = server.URL
-	status1, status2 := apicall.Hexists("abcd", "temp1.txt")
-	assert.Equal(t, true, status1)
-	assert.Equal(t, true, status2)
+	status := apicall.Hexists("abcd")
+	assert.Equal(t, true, status)
 }
 
 func TestCopyCall(t *testing.T) {

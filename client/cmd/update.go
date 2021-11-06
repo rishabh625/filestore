@@ -48,20 +48,38 @@ func Updatefile(files []string) {
 	mutx.Lock()
 	for k, v := range datamap {
 		hashval := generateHash(v)
-		hashexiststatus, _ := apicall.Hexists(hashval, k)
+		hfexist := apicall.HFexists(hashval, k)
+		if hfexist {
+			fmt.Println("Failed to Update , File Content is Already Updated ", k)
+			continue
+		}
+		hashexiststatus := apicall.Hexists(hashval)
+		duplicatestatus := apicall.Fexists(k)
 		if hashexiststatus {
-			status := apicall.CopyCall(k, hashval)
-			if !status {
-				fmt.Println("Failed to Update file ", k)
+			if duplicatestatus {
+				apicall.Remove(k)
+				status := apicall.CopyCall(k, hashval)
+				if !status {
+					fmt.Println("Failed to Update file ", k)
+				} else {
+					fmt.Println("File Copied ", k)
+				}
 			} else {
-				fmt.Println("File Copied ", k)
+				//apicall.Remove(k)
+				status := apicall.CopyCall(k, hashval)
+				if !status {
+					fmt.Println("Failed to Update file ", k)
+				} else {
+					fmt.Println("File Copied ", k)
+				}
 			}
 		} else {
+			apicall.Remove(k)
 			status := apicall.AddCall(k, hashval)
 			if !status {
 				fmt.Println("Failed to Update file ", k)
 			} else {
-				fmt.Println("New File Created as File was not present on server", k)
+				fmt.Println("File Replaced ", k)
 			}
 		}
 	}
