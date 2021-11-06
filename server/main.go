@@ -56,15 +56,18 @@ func main() {
 
 }
 
+// Response ... Default Response structure for API
 type Response struct {
 	Error string
 }
 
+// CopyFileData ... Basic structure used for file operation
 type CopyFileData struct {
 	FileName string
 	Hash     string
 }
 
+// CopyFile ... Copies Existing files in filestore into new given file
 func CopyFile(c *gin.Context) {
 	b := &CopyFileData{}
 	if err := c.ShouldBindWith(b, binding.JSON); err == nil {
@@ -100,6 +103,7 @@ func CopyFile(c *gin.Context) {
 	}
 }
 
+// AddFile ... Adds new file into filestore also maintains it hash in redis
 func AddFile(c *gin.Context) {
 	file, header, err := c.Request.FormFile("file")
 	hash := c.Request.Header.Get("hash")
@@ -136,6 +140,7 @@ func AddFile(c *gin.Context) {
 	c.JSON(http.StatusOK, Response{Error: ""})
 }
 
+// copy helps is copying file content from source to destination
 func copy(src, dst string) (int64, error) {
 	sourceFileStat, err := os.Stat(src)
 	if err != nil {
@@ -161,6 +166,7 @@ func copy(src, dst string) (int64, error) {
 	return nBytes, err
 }
 
+// RemoveFile ... Deletes given file from filestore also deletes entry from redis
 func RemoveFile(c *gin.Context) {
 	b := &CopyFileData{}
 	if err := c.ShouldBindWith(b, binding.JSON); err == nil {
@@ -192,6 +198,7 @@ func RemoveFile(c *gin.Context) {
 	}
 }
 
+// ListFiles ... Lists all the files in file store
 func ListFiles(c *gin.Context) {
 	dataarr, err := listFiles()
 	if err != nil {
@@ -201,6 +208,7 @@ func ListFiles(c *gin.Context) {
 	}
 }
 
+// listFiles ... helps in listing files in file store
 func listFiles() ([]string, error) {
 	strarr := make([]string, 0)
 	err := filepath.Walk("filestore/", func(path string, info os.FileInfo, err error) error {
@@ -216,6 +224,7 @@ func listFiles() ([]string, error) {
 	return strarr, nil
 }
 
+// WordCount Opens each file in filestore and counts number of words in it
 func WordCount(c *gin.Context) {
 	strarr, err := listFiles()
 	if err != nil {
@@ -240,6 +249,7 @@ func WordCount(c *gin.Context) {
 	}
 }
 
+// wordCountFromFile ... helps is getting word count from each file in filestore parallely
 func wordCountFromFile(v string, ch chan int, wg *sync.WaitGroup) {
 	fileHandle, err := os.Open(v)
 	if err != nil {
@@ -256,6 +266,7 @@ func wordCountFromFile(v string, ch chan int, wg *sync.WaitGroup) {
 	ch <- count
 }
 
+// HashExist ... Checks whether file content is duplicated or file already exists
 func HashExist(c *gin.Context) {
 	hash := c.Request.Header.Get("hash")
 	filename := c.Request.Header.Get("file")

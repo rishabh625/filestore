@@ -13,7 +13,7 @@ var db int
 var connection *gredis.Client
 
 //var Config *object.Configuration
-
+//  GetConnection ...  Gives connection to redis at a time only one connection to redis is maintained
 func GetConnection() *gredis.Client {
 	if connection == nil {
 		var err error
