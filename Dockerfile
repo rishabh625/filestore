@@ -10,6 +10,8 @@ LABEL maintainer="Rishabh Mishra <rishabhmishra131@gmail.com>"
 # Set the Current Working Directory inside the container
 WORKDIR /app
 
+RUN mkdir filestore/
+
 COPY . .
 
 # Build the Go app
