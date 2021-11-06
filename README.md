@@ -12,6 +12,7 @@ API_PORT=5000 //port on which API server is running
 ### Steps to Use on local machine
 
 1) git clone this repo
-2) docker-compose up --build -d
-3) docker exec -it filestore_app_1 bash
-4) ./store --help // to access all commands
+2) Create folder as redis-data
+3) docker-compose up --build -d
+4) docker exec -it filestore_app_1 bash
+5) ./store --help // to access all commands
