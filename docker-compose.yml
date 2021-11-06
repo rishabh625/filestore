@@ -18,6 +18,8 @@ services:
     command: ./bin/server
     ports:
       - "5000:5000"
+    volumes:
+      - ./filestore:/app/filestore
     environment:
      - API_HOST=localhost
      - API_PORT=5000
