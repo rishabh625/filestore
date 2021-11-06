@@ -81,6 +81,7 @@ func CopyFile(c *gin.Context) {
 				if len(files) > 0 {
 					//filenm := "filestore/" + b.FileName
 					_, err := copy(files[0], "filestore/"+b.FileName)
+					fmt.Println(err)
 					if err != nil {
 						c.JSON(http.StatusBadRequest, Response{Error: err.Error()})
 					} else {
@@ -109,6 +110,8 @@ func AddFile(c *gin.Context) {
 	}
 	rdb := cache.GetConnection()
 	filename := header.Filename
+	filename = filepath.Base(filename)
+	fmt.Println(filename)
 	out, err := os.Create("filestore/" + filename)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, Response{Error: err.Error()})
