@@ -1,0 +1,4 @@
+filestore/
+*.txt
+vendor/
+test.go
